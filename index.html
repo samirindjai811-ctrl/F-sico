@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Registo de Treino & Alimentação</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      background-color: #121212;
+      color: #e0e0e0;
+      display: flex;
+      justify-content: center;
+      padding: 20px 10px;
+      min-height: 100vh;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background-color: #1e1e1e;
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid #333;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 20px;
+      color: #ffffff;
+      border-bottom: 1px solid #333;
+      padding-bottom: 10px;
+    }
+
+    .section {
+      margin-bottom: 25px;
+      background: #252525;
+      padding: 15px;
+      border-radius: 8px;
+      border: 1px solid #333;
+    }
+
+    .section h2 {
+      font-size: 16px;
+      margin-bottom: 12px;
+      color: #f3c614;
+    }
+
+    .input-group {
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 4px;
+      color: #aaa;
+    }
+
+    input[type="text"],
+    input[type="number"],
+    input[type="time"] {
+      width: 100%;
+      padding: 10px;
+      background: #121212;
+      border: 1px solid #444;
+      border-radius: 6px;
+      color: #fff;
+      font-size: 14px;
+    }
+
+    input:focus {
+      outline: none;
+      border-color: #f3c614;
+    }
+
+    button {
+      width: 100%;
+      padding: 10px;
+      background-color: #f3c614;
+      color: #000;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      font-size: 14px;
+      margin-top: 5px;
+    }
+
+    button:hover {
+      background-color: #dcb10f;
+    }
+
+    .list {
+      margin-top: 10px;
+      font-size: 13px;
+    }
+
+    .list-item {
+      background: #1a1a1a;
+      padding: 8px;
+      border-radius: 4px;
+      margin-bottom: 6px;
+      border-left: 3px solid #f3c614;
+    }
+
+    .status-box {
+      background: #1a1a1a;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 14px;
+      line-height: 1.5;
+      color: #4caf50;
+      border: 1px solid #2e7d32;
+    }
+  </style>
+</head>
+<body>
+
+<div class="container">
+  <h1>REGISTO DIÁRIO</h1>
+
+  <!-- REGISTO DE ALIMENTAÇÃO -->
+  <div class="section">
+    <h2>1. Alimentação</h2>
+    <div class="input-group">
+      <label>O que comeste?</label>
+      <input type="text" id="food-input" placeholder="Ex: Arroz, frango e salada">
+    </div>
+    <div class="input-group">
+      <label>Horário da refeição</label>
+      <input type="time" id="food-time">
+    </div>
+    <button onclick="addFood()">Registar Alimentação</button>
+
+    <div class="list" id="food-list"></div>
+  </div>
+
+  <!-- REGISTO DE TREINO -->
+  <div class="section">
+    <h2>2. Treino</h2>
+    <div class="input-group">
+      <label>Exercício feito</label>
+      <input type="text" id="workout-input" placeholder="Ex: Flexões">
+    </div>
+    <div class="input-group">
+      <label>Número de repetições</label>
+      <input type="number" id="reps-input" placeholder="Ex: 50">
+    </div>
+    <div class="input-group">
+      <label>Horário do treino</label>
+      <input type="time" id="workout-time">
+    </div>
+    <button onclick="addWorkout()">Registar Treino</button>
+
+    <div class="list" id="workout-list"></div>
+  </div>
+
+  <!-- ATUALIZAÇÃO DO FÍSICO -->
+  <div class="section">
+    <h2>3. Estado Atual do Físico</h2>
+    <div class="status-box" id="physical-status">
+      Nenhum registo efetuado hoje. Adiciona o teu treino e refeições para atualizar o teu estado físico.
+    </div>
+  </div>
+</div>
+
+<script>
+  let totalReps = 0;
+  let foodCount = 0;
+
+  function addFood() {
+    const food = document.getElementById('food-input').value;
+    const time = document.getElementById('food-time').value;
+
+    if (!food || !time) {
+      alert('Por favor, preenche o que comeste e o horário!');
+      return;
+    }
+
+    const foodList = document.getElementById('food-list');
+    const item = document.createElement('div');
+    item.className = 'list-item';
+    item.innerText = `[${time}] ${food}`;
+    foodList.appendChild(item);
+
+    foodCount++;
+    document.getElementById('food-input').value = '';
+    document.getElementById('food-time').value = '';
+
+    updatePhysicalStatus();
+  }
+
+  function addWorkout() {
+    const workout = document.getElementById('workout-input').value;
+    const reps = parseInt(document.getElementById('reps-input').value);
+    const time = document.getElementById('workout-time').value;
+
+    if (!workout || isNaN(reps) || !time) {
+      alert('Por favor, preenche o exercício, as repetições e o horário!');
+      return;
+    }
+
+    const workoutList = document.getElementById('workout-list');
+    const item = document.createElement('div');
+    item.className = 'list-item';
+    item.innerText = `[${time}] ${workout} - ${reps} repetições`;
+    workoutList.appendChild(item);
+
+    totalReps += reps;
+    document.getElementById('workout-input').value = '';
+    document.getElementById('reps-input').value = '';
+    document.getElementById('workout-time').value = '';
+
+    updatePhysicalStatus();
+  }
+
+  function updatePhysicalStatus() {
+    const statusBox = document.getElementById('physical-status');
+    let text = "";
+
+    if (totalReps === 0 && foodCount === 0) {
+      text = "Nenhum registo efetuado hoje.";
+    } else {
+      text = `Comeste ${foodCount} refeição(ões) e completaste ${totalReps} repetições no total. `;
+      
+      if (totalReps >= 100) {
+        text += "Excelente estimulo muscular! O teu físico está em fase de regeneração e ganho de força.";
+      } else if (totalReps > 0) {
+        text += "Bom volume de treino exercido. O corpo ativou a musculatura e está a absorver os nutrientes.";
+      }
+
+      if (foodCount > 0) {
+        text += " Nutrição registada com sucesso para apoiar a recuperação.";
+      }
+    }
+
+    statusBox.innerText = text;
+  }
+</script>
+
+</body>
+</html>
